@@ -1,6 +1,41 @@
+from math import sqrt
 from os import path
+from random import uniform
 
 from ammm_globals import AMMMException
+
+
+def _gen_coordinates(n, min_dist, max_x, max_y):
+    """
+    Generate coordinates while respecting minimum distances between them.
+    :param n: number of coordinates to generate
+    :param min_dist: minimum distance between coordinates
+    :param max_x: max x coordinate
+    :param max_y: max y coordinate
+    :return:
+    """
+    coords = []
+    for _ in range(n):
+        coord = [uniform(0, max_x), uniform(0, max_y)]
+        while not _coord_is_valid(coord, coords, min_dist):
+            coord = [uniform(0, max_x), uniform(0, max_y)]
+        coords.append(coord)
+    return coords
+
+
+def _coord_is_valid(coord, prev_cords, min_dist):
+    """
+    Validate that a coordinate is not too close to other existing coordinates.
+    :param coord: new coordinate
+    :param prev_cords: existing coordinate
+    :param min_dist: minimum distance between new and existing coordinates
+    :return: False if the new coord is too close to any existing coord, True otherwise
+    """
+    for other_coord in prev_cords:
+        if sqrt(abs(coord[0] - other_coord[0]) ** 2 \
+                + abs(coord[1] - other_coord[1]) ** 2) < min_dist:
+            return False
+    return True
 
 
 class InstanceGenerator:
@@ -17,17 +52,23 @@ class InstanceGenerator:
         # nTypes
         nTypes = self.config.nTypes
 
+        # coords
+        maxCoordX = self.config.maxCoordX
+        maxCoordY = self.config.maxCoordY
+
         # posCc,cords...
-        numCities = self.config.numCities
+        nCities = self.config.nCities
+
         # d_city
         maxDCity = self.config.maxDCity
         minDCity = self.config.minDCity
+
         # pc
         maxCityPop = self.config.maxCityPop
         minCityPop = self.config.minCityPop
 
         # posLoct,cords
-        numLocations = self.config.numLocations
+        nLocations = self.config.nLocations
         # d_center
         d_center = self.config.d_center
 
@@ -43,14 +84,29 @@ class InstanceGenerator:
             raise AMMMException('Directory(%s) does not exist' % instancesDirectory)
 
         for i in range(numInstances):
-            instancePath = path.join(instancesDirectory, '{}_{}.{}'.format(fileNamePrefix, i, fileNameExtension))
+            population = [uniform(minCityPop, maxCityPop) for _ in range(nCities)]
+            pos_cities = _gen_coordinates(nCities, 1, maxCoordX, maxCoordY)
+            pos_locations = _gen_coordinates(nLocations, d_center, maxCoordX, maxCoordY)
+            d_cities = [uniform(minDCity, maxDCity) for _ in range(nCities)]
+            cap_t = [uniform(minCap, maxCap) for _ in range(nTypes)]
+            cost_t = [uniform(minCost, maxCost) for _ in range(nTypes)]
+
+            instancePath = path.join(instancesDirectory,
+                                     '{}_{}.{}'.format(fileNamePrefix, i, fileNameExtension))
+            lines = [
+                'nLocations\t= {}'.format(nLocations),
+                'nCities\t= {}'.format(nCities),
+                'nTypes\t= {}'.format(nTypes),
+                '',
+                'p\t\t= [{}]'.format(' '.join(map(str, population))),
+                'posCities\t= [{}]'.format(' '.join('[{} {}]'.format(x, y) for x, y in pos_cities)),
+                'posLocations\t= [{}]'.format(' '.join('[{} {}]'.format(x, y) for x, y in pos_locations)),
+                '',
+                'd_city\t= [{}]'.format(' '.join(map(str, d_cities))),
+                'cap\t= [{}]'.format(' '.join(map(str, cap_t))),
+                'cost\t= [{}]'.format(' '.join(map(str, cost_t))),
+                '',
+                'd_center = {}'.format(d_center)
+            ]
             with open(instancePath, 'w') as fInstance:
-                population = [0] * numCities
-
-                pos_cities = [[0, 0]] * numCities
-
-                pos_locations = [[0, 0]] * numLocations
-
-                cap_t = [0] * nTypes
-
-                cost_t = [0] * nTypes
+                fInstance.writelines(lines)
