@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
+from os.path import join
 import sys
 from project.dat_parser import DATParser
 from ammm_globals import AMMMException
@@ -26,7 +27,7 @@ from project.instance_generator import InstanceGenerator
 
 def run():
     try:
-        config_file = "config\\config.dat"
+        config_file = join("project", "config", "config.dat")
         print("AMMM Instance Generator")
         print("-----------------------")
         print("Reading Config file %s..." % config_file)

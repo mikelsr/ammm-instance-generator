@@ -1,8 +1,12 @@
 from math import sqrt
-from os import path
+from os import makedirs, path
 from random import uniform
 
 from ammm_globals import AMMMException
+
+
+def _uniform_int(floor, ceil):
+    return int(uniform(floor, ceil))
 
 
 def _gen_coordinates(n, min_dist, max_x, max_y):
@@ -16,9 +20,9 @@ def _gen_coordinates(n, min_dist, max_x, max_y):
     """
     coords = []
     for _ in range(n):
-        coord = [uniform(0, max_x), uniform(0, max_y)]
+        coord = [_uniform_int(0, max_x), _uniform_int(0, max_y)]
         while not _coord_is_valid(coord, coords, min_dist):
-            coord = [uniform(0, max_x), uniform(0, max_y)]
+            coord = [_uniform_int(0, max_x), _uniform_int(0, max_y)]
         coords.append(coord)
     return coords
 
@@ -81,15 +85,16 @@ class InstanceGenerator:
         minCost = self.config.minCost
 
         if not path.isdir(instancesDirectory):
-            raise AMMMException('Directory(%s) does not exist' % instancesDirectory)
+            makedirs(instancesDirectory)
+            # raise AMMMException('Directory(%s) does not exist' % instancesDirectory)
 
         for i in range(numInstances):
-            population = [uniform(minCityPop, maxCityPop) for _ in range(nCities)]
+            population = [_uniform_int(minCityPop, maxCityPop) for _ in range(nCities)]
             pos_cities = _gen_coordinates(nCities, 1, maxCoordX, maxCoordY)
             pos_locations = _gen_coordinates(nLocations, d_center, maxCoordX, maxCoordY)
-            d_cities = [uniform(minDCity, maxDCity) for _ in range(nCities)]
-            cap_t = [uniform(minCap, maxCap) for _ in range(nTypes)]
-            cost_t = [uniform(minCost, maxCost) for _ in range(nTypes)]
+            d_cities = [_uniform_int(minDCity, maxDCity) for _ in range(nCities)]
+            cap_t = [_uniform_int(minCap, maxCap) for _ in range(nTypes)]
+            cost_t = [_uniform_int(minCost, maxCost) for _ in range(nTypes)]
 
             instancePath = path.join(instancesDirectory,
                                      '{}_{}.{}'.format(fileNamePrefix, i, fileNameExtension))
@@ -109,4 +114,4 @@ class InstanceGenerator:
                 'd_center = {}'.format(d_center)
             ]
             with open(instancePath, 'w') as fInstance:
-                fInstance.writelines(lines)
+                fInstance.writelines(['{}\n'.format(line) for line in lines])
