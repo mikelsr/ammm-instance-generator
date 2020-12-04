@@ -90,8 +90,9 @@ class InstanceGenerator:
 
         for i in range(numInstances):
             population = [_uniform_int(minCityPop, maxCityPop) for _ in range(nCities)]
-            pos_cities = _gen_coordinates(nCities, 1, maxCoordX, maxCoordY)
-            pos_locations = _gen_coordinates(nLocations, d_center, maxCoordX, maxCoordY)
+            # sort coordinate arrays for readability
+            pos_cities = sorted(_gen_coordinates(nCities, 1, maxCoordX, maxCoordY))
+            pos_locations = sorted(_gen_coordinates(nLocations, d_center, maxCoordX, maxCoordY))
             d_cities = [_uniform_int(minDCity, maxDCity) for _ in range(nCities)]
             cap_t = [_uniform_int(minCap, maxCap) for _ in range(nTypes)]
             cost_t = [_uniform_int(minCost, maxCost) for _ in range(nTypes)]
@@ -99,19 +100,19 @@ class InstanceGenerator:
             instancePath = path.join(instancesDirectory,
                                      '{}_{}.{}'.format(fileNamePrefix, i, fileNameExtension))
             lines = [
-                'nLocations\t= {}'.format(nLocations),
-                'nCities\t= {}'.format(nCities),
-                'nTypes\t= {}'.format(nTypes),
+                'nLocations\t= {};'.format(nLocations),
+                'nCities\t\t= {};'.format(nCities),
+                'nTypes\t\t= {};'.format(nTypes),
                 '',
-                'p\t\t= [{}]'.format(' '.join(map(str, population))),
-                'posCities\t= [{}]'.format(' '.join('[{} {}]'.format(x, y) for x, y in pos_cities)),
-                'posLocations\t= [{}]'.format(' '.join('[{} {}]'.format(x, y) for x, y in pos_locations)),
+                'p\t\t= [{}];'.format(' '.join(map(str, population))),
+                'posCities\t= [{}];'.format(' '.join('[{} {}]'.format(x, y) for x, y in pos_cities)),
+                'posLocations\t= [{}];'.format(' '.join('[{} {}]'.format(x, y) for x, y in pos_locations)),
                 '',
-                'd_city\t= [{}]'.format(' '.join(map(str, d_cities))),
-                'cap\t= [{}]'.format(' '.join(map(str, cap_t))),
-                'cost\t= [{}]'.format(' '.join(map(str, cost_t))),
+                'd_city\t= [{}];'.format(' '.join(map(str, d_cities))),
+                'cap\t= [{}];'.format(' '.join(map(str, cap_t))),
+                'cost\t= [{}];'.format(' '.join(map(str, cost_t))),
                 '',
-                'd_center = {}'.format(d_center)
+                'd_center = {};'.format(d_center)
             ]
             with open(instancePath, 'w') as fInstance:
                 fInstance.writelines(['{}\n'.format(line) for line in lines])
