@@ -3,23 +3,9 @@ from ammm_globals import AMMMException
 
 def validate(data):
 
-    dd = data.__dict__
-
-    # Validate that mandatory input parameters were found
-    for paramName in ['inputDataFile', 'solutionFile', 'solver']:
-        if paramName not in dd:
-            raise AMMMException('Parameter/Set(%s) not contained in Configuration' % str(paramName))
-
-    # Validate input data file
-    inputDataFile = data.inputDataFile
-    if len(inputDataFile) == 0:
-        raise AMMMException('Value for inputDataFile is empty')
-    if not os.path.exists(inputDataFile):
-        raise AMMMException('inputDataFile(%s) does not exist' % inputDataFile)
-
     # Validate verbose
     verbose = False
-    if 'verbose' in data.dd:
+    if 'verbose' in data.__dict__:
         verbose = data.verbose
         if not isinstance(verbose, bool) or (verbose not in [True, False]):
             raise AMMMException('verbose({}) has to be a boolean value'.format(verbose))
@@ -27,7 +13,8 @@ def validate(data):
         data.verbose = verbose
 
     ints = [
-        "nTypes"
+        "numInstances",
+        "nTypes",
         "nCities",
         "nLocations",
         "maxCoordX",

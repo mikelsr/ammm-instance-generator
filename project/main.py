@@ -30,7 +30,7 @@ def run():
         config_file = join("project", "config", "config.dat")
         print("AMMM Instance Generator")
         print("-----------------------")
-        print("Reading Config file %s..." % config_file)
+        print("Reading Config file {}...".format(config_file))
         config = DATParser.parse(config_file)
         validate(config)
         print("Creating Instances...")
@@ -39,7 +39,7 @@ def run():
         print("Done")
         return 0
     except AMMMException as e:
-        print("Exception: %s", e)
+        print("Exception: {}".format(e))
         return 1
 
 

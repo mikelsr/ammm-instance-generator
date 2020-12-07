@@ -93,7 +93,7 @@ class InstanceGenerator:
             # sort coordinate arrays for readability
             pos_cities = sorted(_gen_coordinates(nCities, 1, maxCoordX, maxCoordY))
             pos_locations = sorted(_gen_coordinates(nLocations, d_center, maxCoordX, maxCoordY))
-            d_cities = [_uniform_int(minDCity, maxDCity) for _ in range(nCities)]
+            d_cities = [_uniform_int(minDCity, maxDCity) for _ in range(nTypes)]
             cap_t = [_uniform_int(minCap, maxCap) for _ in range(nTypes)]
             cost_t = [_uniform_int(minCost, maxCost) for _ in range(nTypes)]
 
