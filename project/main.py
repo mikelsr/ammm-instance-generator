@@ -1,4 +1,4 @@
-'''
+"""
 AMMM P2 Instance Generator v2.0
 Main function.
 Copyright 2020 Luis Velasco.
@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 
 from os.path import join
 import sys
@@ -43,5 +43,5 @@ def run():
         return 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(run())

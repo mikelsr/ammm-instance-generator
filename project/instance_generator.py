@@ -36,14 +36,18 @@ def _coord_is_valid(coord, prev_cords, min_dist):
     :return: False if the new coord is too close to any existing coord, True otherwise
     """
     for other_coord in prev_cords:
-        if sqrt(abs(coord[0] - other_coord[0]) ** 2 \
-                + abs(coord[1] - other_coord[1]) ** 2) < min_dist:
+        if (
+            sqrt(
+                abs(coord[0] - other_coord[0]) ** 2
+                + abs(coord[1] - other_coord[1]) ** 2
+            )
+            < min_dist
+        ):
             return False
     return True
 
 
 class InstanceGenerator:
-
     def __init__(self, config):
         self.config = config
 
@@ -92,27 +96,35 @@ class InstanceGenerator:
             population = [_uniform_int(minCityPop, maxCityPop) for _ in range(nCities)]
             # sort coordinate arrays for readability
             pos_cities = sorted(_gen_coordinates(nCities, 1, maxCoordX, maxCoordY))
-            pos_locations = sorted(_gen_coordinates(nLocations, d_center, maxCoordX, maxCoordY))
+            pos_locations = sorted(
+                _gen_coordinates(nLocations, d_center, maxCoordX, maxCoordY)
+            )
             d_cities = [_uniform_int(minDCity, maxDCity) for _ in range(nTypes)]
             cap_t = [_uniform_int(minCap, maxCap) for _ in range(nTypes)]
             cost_t = [_uniform_int(minCost, maxCost) for _ in range(nTypes)]
 
-            instancePath = path.join(instancesDirectory,
-                                     '{}_{}.{}'.format(fileNamePrefix, i, fileNameExtension))
+            instancePath = path.join(
+                instancesDirectory,
+                "{}_{}.{}".format(fileNamePrefix, i, fileNameExtension),
+            )
             lines = [
-                'nLocations\t= {};'.format(nLocations),
-                'nCities\t\t= {};'.format(nCities),
-                'nTypes\t\t= {};'.format(nTypes),
-                '',
-                'p\t\t= [ {} ];'.format(' '.join(map(str, population))),
-                'posCities\t= [ {} ];'.format(' '.join('[{} {}]'.format(x, y) for x, y in pos_cities)),
-                'posLocations\t= [ {} ];'.format(' '.join('[{} {}]'.format(x, y) for x, y in pos_locations)),
-                '',
-                'd_city\t= [{}];'.format(' '.join(map(str, d_cities))),
-                'cap\t= [{}];'.format(' '.join(map(str, cap_t))),
-                'cost\t= [{}];'.format(' '.join(map(str, cost_t))),
-                '',
-                'd_center = {};'.format(d_center)
+                "nLocations\t= {};".format(nLocations),
+                "nCities\t\t= {};".format(nCities),
+                "nTypes\t\t= {};".format(nTypes),
+                "",
+                "p\t\t= [ {} ];".format(" ".join(map(str, population))),
+                "posCities\t= [ {} ];".format(
+                    " ".join("[{} {}]".format(x, y) for x, y in pos_cities)
+                ),
+                "posLocations\t= [ {} ];".format(
+                    " ".join("[{} {}]".format(x, y) for x, y in pos_locations)
+                ),
+                "",
+                "d_city\t= [{}];".format(" ".join(map(str, d_cities))),
+                "cap\t= [{}];".format(" ".join(map(str, cap_t))),
+                "cost\t= [{}];".format(" ".join(map(str, cost_t))),
+                "",
+                "d_center = {};".format(d_center),
             ]
-            with open(instancePath, 'w') as fInstance:
-                fInstance.writelines(['{}\n'.format(line) for line in lines])
+            with open(instancePath, "w") as fInstance:
+                fInstance.writelines(["{}\n".format(line) for line in lines])
