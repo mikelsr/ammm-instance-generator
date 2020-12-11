@@ -20,9 +20,9 @@ def _gen_coordinates(n, min_dist, max_x, max_y):
     """
     coords = []
     for _ in range(n):
-        coord = [_uniform_int(0, max_x), _uniform_int(0, max_y)]
+        coord = (_uniform_int(0, max_x), _uniform_int(0, max_y))
         while not _coord_is_valid(coord, coords, min_dist):
-            coord = [_uniform_int(0, max_x), _uniform_int(0, max_y)]
+            coord = (_uniform_int(0, max_x), _uniform_int(0, max_y))
         coords.append(coord)
     return coords
 
